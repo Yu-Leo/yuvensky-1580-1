@@ -1,0 +1,14 @@
+.courses-list-item {
+	list-style: none;
+	padding-bottom: 5px;
+}
+
+.courses-list-item>a {
+	text-decoration: none;
+	color: #236850;
+
+}
+
+.courses-list-item>a:hover {
+	color: #9B5635;
+}

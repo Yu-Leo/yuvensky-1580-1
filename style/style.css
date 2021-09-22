@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+
+body {
+	font-family: 'Ubuntu', sans-serif;
+}
+
 header {
 	background-color: rgb(169, 209, 142);
 	height: 50px;
@@ -9,6 +15,10 @@ header {
 	list-style: none;
 	display: inline-block;
 	margin-right: 20px;
+}
+
+.header-menu-item-img>a>img {
+	border-radius: 10px;
 }
 
 .header-menu-item>a {

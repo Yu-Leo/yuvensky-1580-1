@@ -35,7 +35,17 @@ footer {
 	height: 40px;
 	border-radius: 5px;
 }
+
 footer>p {
 	padding-top: 10px;
 	padding-left: 20px;
+}
+
+.footer-author {
+	text-decoration: none;
+	color: #236850;
+}
+
+.footer-author:hover {
+	color: #9B5635;
 }

@@ -1,7 +1,35 @@
-
-
 .logo {
 	display: inline-block;
 	width: 40%;
 	margin: 0 30%;
+}
+
+.right_menu {
+	position: fixed;
+	top:10%;
+	right: 10px;
+	width: 180px;
+	height: 250px;
+	border-radius: 5px;
+	background-color: rgb(169, 209, 142);
+	
+}
+
+.right_menu-list {
+	padding: 5px 20px;
+
+}
+
+.right_menu-item {
+	list-style: none;
+	margin-bottom: 20px;
+}
+
+.right_menu-item>a {
+	text-decoration: none;
+	color: #6B2462;
+}
+
+.right_menu-item>a:hover {
+	color: #9B5635;
 }

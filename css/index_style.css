@@ -1,0 +1,10 @@
+.main_body {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.logo {
+	display: inline-block;
+	width: 50%;
+	margin: 0 25%;
+}

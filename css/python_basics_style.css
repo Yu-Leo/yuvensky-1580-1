@@ -2,6 +2,38 @@
 	padding: 5px;
 	outline-width: 2px;
 	outline-style: solid;
-	outline-color: #8D3047;
+	outline-color: #236850;
 	border-radius: 10px;
+	display: inline-block;
+	width: 100px;
+	margin-right: 50px;
+}
+
+.description-text {
+	display: inline-block;
+	width: 70%;
+}
+
+.description-price {
+	display: inline-block;
+	width: 70%;
+}
+
+
+.description-btn {
+	display: inline-block;
+	width: 10%;
+
+	border-color: #8D3047;
+	border-radius: 5px;
+	width: 150px;
+	height: 50px;
+	font-size: 15pt;
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 500;
+
+}
+
+.description-btn:hover {
+    background-color:#8D3047;
 }

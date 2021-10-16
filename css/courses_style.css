@@ -28,6 +28,22 @@
 	display: inline-block;
     text-align: right;
     width: 20%;
+}
 
-    
+.card-btn {
+	display: inline-block;
+	width: 10%;
+
+	border-color: #8D3047;
+	border-radius: 5px;
+	width: 130px;
+	height: 40px;
+	font-size: 15pt;
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 500;
+
+}
+
+.card-btn:hover {
+    background-color:#8D3047;
 }

@@ -31,19 +31,11 @@
 }
 
 .card-btn {
-	display: inline-block;
-	width: 10%;
-
-	border-color: #8D3047;
-	border-radius: 5px;
-	width: 130px;
-	height: 40px;
-	font-size: 15pt;
-	font-family: 'Ubuntu', sans-serif;
-	font-weight: 500;
-
+	border-color: #236850;
+    color: #236850;
 }
 
 .card-btn:hover {
-    background-color:#8D3047;
+    background-color:rgb(169, 209, 142);
+    border-color: rgb(169, 209, 142);
 }

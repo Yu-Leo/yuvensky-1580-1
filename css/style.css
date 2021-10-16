@@ -57,3 +57,24 @@ footer>p {
 .footer-author:hover {
 	color: #9B5635;
 }
+
+@media screen and (max-width: 1200px) {
+	/*
+	.header-menu-list {
+		visibility: hidden;
+	} */
+
+	.header-menu-item-text {
+		display: block;
+		width: 100px;
+		height: 40px;
+		background-color: rgb(169, 209, 142);
+		border-radius: 5px;
+		padding: 5px;
+		margin-right: 10px;
+	}
+
+	.main_body {
+		padding: 20px;
+	}
+}

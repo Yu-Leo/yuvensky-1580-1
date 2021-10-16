@@ -28,6 +28,14 @@
 	display: inline-block;
     text-align: right;
     width: 20%;
+}
 
-    
+.card-btn {
+	border-color: #236850;
+    color: #236850;
+}
+
+.card-btn:hover {
+    background-color:rgb(169, 209, 142);
+    border-color: rgb(169, 209, 142);
 }

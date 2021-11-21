@@ -1,0 +1,12 @@
+1) UPDATE accounts SET registration_date = SUBSTR(registration_date, 7, 4) || '-' || SUBSTR(registration_date, 4, 2) || '-' || SUBSTR(registration_date, 1, 2);
+
+
+1-reverse) UPDATE accounts SET registration_date = SUBSTR(registration_date, 9, 2) || '.' || SUBSTR(registration_date, 6, 2) || '.' || SUBSTR(registration_date, 1, 4);
+
+2) SELECT login FROM accounts ORDER BY registration_date DESC LIMIT 1;
+
+3) SELECT DISTINCT(SUBSTR(birthday, 1, 4)) FROM accounts;
+
+4) SELECT COUNT(*) AS 'total_items' FROM courses;
+
+5) SELECT AVG(CAST((julianday('now') - julianday(birthday)) AS INTEGER) / 365) FROM accounts WHERE (CAST((julianday('now') - julianday(registration_date)) AS INTEGER) <= 2 * 30);

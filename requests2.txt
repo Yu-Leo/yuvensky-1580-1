@@ -1,0 +1,24 @@
+1) Получение списка всех курсов (название + описание + рейтинг), отсортированного по невозрастанию их рейтинга:
+
+SELECT name, description, rating FROM courses ORDER BY rating DESC;
+
+2) Получение списка изучаемых курсов и информации об их прохождении (название курса + процент прохождения + оценка) для одного пользователя по его id (для отображения в профиле):
+
+SELECT
+(SELECT courses.name FROM courses WHERE courses.course_id == active_courses.course_id) AS course_name, percentage_of_passing, mark
+FROM active_courses
+WHERE account_id == 1;
+
+3) Получение информации (логин + рейтинг) о трёх пользователях с наивысшими рейтингами:
+
+SELECT login, total_rating FROM accounts ORDER BY total_rating DESC LIMIT 3;
+
+4) Получение информации о пользователе (логин + имя + фамилия + рейтинг + когда зарегистрировался) по его id (для отображения в профиле)
+
+SELECT login, first_name, last_name, total_rating, registration_date FROM accounts WHERE account_id = 1;
+
+5) Получение списка логинов пользователей, у которых сегодня д. р. (отсортированного по невозрастанию рейтинга (сначала поздравим тех, у кого рейтинг выше)) 
+
+SELECT login FROM accounts WHERE substr(birthday, 6) == (substr(date('now'), 6)) ORDER BY total_rating DESC;
+
+

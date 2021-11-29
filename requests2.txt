@@ -17,7 +17,7 @@ SELECT login, total_rating FROM accounts ORDER BY total_rating DESC LIMIT 3;
 
 SELECT login, first_name, last_name, total_rating, registration_date FROM accounts WHERE account_id = 1;
 
-5) Получение списка id-шников пользователей, у которых сегодня д. р. (отсортированного по невозрастанию рейтинга (сначала поздравим тех, у кого рейтинг выше))
+5) Получение списка id-шников пользователей, у которых сегодня д. р.
 
 SELECT account_id FROM accounts WHERE substr(birthday, 6) == (substr(date('now'), 6));
 

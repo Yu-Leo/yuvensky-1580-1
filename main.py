@@ -32,7 +32,6 @@ class Database:
         request = "SELECT login, total_rating FROM accounts ORDER BY total_rating DESC LIMIT 3;"
         result = self.__cursor.execute(request)
         return result.fetchall() 
- 
 
     def get_user_info(self, user_id):
         request = "SELECT login, first_name, last_name, total_rating, registration_date FROM accounts WHERE account_id = :user_id;"

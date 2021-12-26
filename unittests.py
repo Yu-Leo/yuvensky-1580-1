@@ -89,15 +89,11 @@ INSERT INTO "courses" VALUES (3,'Python',20,'Краткий курс по осн
     def test_get_user_courses(self):
         test_user_id = 1
         result = self.database.get_user_courses(test_user_id)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0][0], 'Linux')
-        self.assertEqual(result[1][0], 'Python')
+        self.assertEqual(result, [('Linux', 100, 100.0), ('Python', 70, 70.0)])
 
         test_user_id = 2
         result = self.database.get_user_courses(test_user_id)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0][0], 'Linux')
-        self.assertEqual(result[1][0], 'Windows')
+        self.assertEqual(result, [('Linux', 50, 80.0), ('Windows', 70, 90.0)])
 
     def test_get_top_of_users(self):
         result = self.database.get_top_of_users()
@@ -108,19 +104,11 @@ INSERT INTO "courses" VALUES (3,'Python',20,'Краткий курс по осн
     def test_get_user_info(self):
         test_user_id = 1
         result = self.database.get_user_info(test_user_id)
-        self.assertEqual(result[0], 'leo')
-        self.assertEqual(result[1], 'Lev')
-        self.assertEqual(result[2], 'Yu')
-        self.assertEqual(result[3], 100)
-        self.assertEqual(result[4], '2021-11-21')
+        self.assertEqual(result, ('leo', 'Lev', 'Yu', 100, '2021-11-21'))
 
         test_user_id = 5
         result = self.database.get_user_info(test_user_id)
-        self.assertEqual(result[0], 'nick')
-        self.assertEqual(result[1], 'Nikolay')
-        self.assertEqual(result[2], 'Ivanov')
-        self.assertEqual(result[3], 50)
-        self.assertEqual(result[4], '2021-11-27')
+        self.assertEqual(result, ('nick', 'Nikolay', 'Ivanov', 50, '2021-11-27'))
 
     def test_get_users_whose_birthday_is_today(self):
         self.database.cursor.execute("SELECT (substr(date('now'), 6));")

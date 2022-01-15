@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS "courses" (
     "passage_time"	INTEGER,
     PRIMARY KEY("course_id" AUTOINCREMENT)
 );
-COMMIT;
+
 INSERT INTO "accounts" VALUES (1,'leo','Lev','Yu','l@test.ru','12345',100,'2021-11-21','2004-12-11');
 INSERT INTO "accounts" VALUES (2,'max','Max','Ivanov','m@test.ru','qwerty',50,'2020-11-20','2005-01-01');
 INSERT INTO "accounts" VALUES (3,'misha','Misha','Mikhailov','misha@test.ru','qwerty123',80,'2021-08-20','2003-01-01');

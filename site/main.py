@@ -100,8 +100,13 @@ def page_not_found(error):
     return flask.render_template('404.html'), 404
 
 
+@application.route('/')
+def main_page_1():
+    return flask.render_template("index.html")
+
+
 @application.route('/index')
-def main_page():
+def main_page_2():
     return flask.render_template("index.html")
 
 
@@ -124,14 +129,21 @@ def get_courses() -> list:
     return Courses.query.all()
 
 
+def get_course_by_link(link: str):
+    courses: list = Courses.query.all()
+    filtered = list(filter(lambda course: course.link == link, courses))
+    return filtered[0] if len(filtered) == 1 else None
+
+
 @application.route('/courses')
 def courses():
     return flask.render_template("courses.html", courses=get_courses())
 
 
-@application.route('/python_basics')
-def python_basics():
-    return flask.render_template("python_basics.html")
+@application.route('/course/<course>')
+def show_course_page(course):
+    print(course)
+    return flask.render_template('course_page.html', course=get_course_by_link(course))
 
 
 if __name__ == '__main__':

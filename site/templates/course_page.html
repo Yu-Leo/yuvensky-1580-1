@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Python. Основы{% endblock %}
+
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/python_basics_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main_body">
+
+    <h1>{{course.name}}</h1>
+    <div class="description-container">
+        <img class="python-logo" src="{{ url_for('static', filename='img/' + course.logo_file_name) }}"
+             alt="python_logo">
+        <div class="description-text">
+            <h2 class="description-price">Цена: {{course.price}} рублей</h2>
+
+            <button class="btn btn-outline-success description-btn">Изучить</button>
+            <p>{{course.description}}</p>
+        </div>
+    </div>
+    <a href="../courses">Назад, к списку курсов</a> <br>
+</div>
+{% endblock %}

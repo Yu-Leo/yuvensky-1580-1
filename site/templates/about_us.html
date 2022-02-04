@@ -1,70 +1,40 @@
-<!DOCTYPE html>
-<html lang="ru">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='img/logo_tab.png') }}">
-    <title>О нас</title>
-</head>
-
-<body>
-<div class="container">
-    <header>
-        <ul class="header-menu-list">
-            <li class="header-menu-item header-menu-item-img"><a href="index">
-                <img src="{{ url_for('static', filename='img/logo_micro.png') }}" alt="logo_micro"></a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Новости (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="courses">Список курсов</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Рубрики (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Темы (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Языки (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="about_us">О нас</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="reviews">Отзывы</a></li>
-        </ul>
-    </header>
-
-    <div class="main_body">
+{% block title %}О нас{% endblock %}
 
 
-        <h1>О нас</h1>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum repudiandae est ipsam modi cupiditate
-            vero
-            laudantium repellat autem saepe, praesentium quibusdam voluptatibus odio necessitatibus omnis recusandae
-            ad
-            corporis distinctio quaerat.
-            Laboriosam eligendi ea veritatis perspiciatis sequi quasi maiores quis dolor nemo ipsam sint quae
-            excepturi
-            aspernatur adipisci impedit, similique soluta esse blanditiis corrupti eaque ipsa. Quam placeat nisi
-            doloribus
-            fuga?
-            Minus inventore unde tempora. Sunt veritatis sint harum autem quasi iusto dolorem fugiat, quos impedit
-            fuga
-            et
-            voluptate officiis vero possimus! Facere necessitatibus error laborum dolore nostrum at dolores maiores.
-            Eaque, repellat nihil? Aspernatur repellat at recusandae enim adipisci culpa qui molestias rem soluta
-            iusto,
-            accusantium distinctio reprehenderit quae dolores. Labore, libero aliquid quos doloremque vero provident
-            facilis
-            ullam maiores?
-            Voluptates voluptate suscipit quidem, nisi dicta, earum facilis autem ab animi recusandae reprehenderit?
-            Tempora, illo architecto accusantium iste molestiae repellendus deserunt eligendi veniam excepturi qui
-            voluptate, dolores fugiat laudantium minus?</p>
+{% block content %}
+<div class="main_body">
 
-        <h2>МГТУ им. Н. Э. Баумана</h2>
-        <script type="text/javascript" charset="utf-8" async
-                src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aea45514fb22376ceb947628dd06064443c89b3ab455ff450f08a99ef99c56592&amp;width=500&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
 
-        <h3>Автор: <a href="https://github.com/Yu-Leo">Lev Yuvensky</a></h3>
-    </div>
-    <footer>
-        <p> ©ITLION. Автор: <a class="footer-author" href="https://github.com/Yu-Leo" target="_blank">Lev
-            Yuvensky</a></p>
-    </footer>
+    <h1>О нас</h1>
+    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum repudiandae est ipsam modi cupiditate
+        vero
+        laudantium repellat autem saepe, praesentium quibusdam voluptatibus odio necessitatibus omnis recusandae
+        ad
+        corporis distinctio quaerat.
+        Laboriosam eligendi ea veritatis perspiciatis sequi quasi maiores quis dolor nemo ipsam sint quae
+        excepturi
+        aspernatur adipisci impedit, similique soluta esse blanditiis corrupti eaque ipsa. Quam placeat nisi
+        doloribus
+        fuga?
+        Minus inventore unde tempora. Sunt veritatis sint harum autem quasi iusto dolorem fugiat, quos impedit
+        fuga
+        et
+        voluptate officiis vero possimus! Facere necessitatibus error laborum dolore nostrum at dolores maiores.
+        Eaque, repellat nihil? Aspernatur repellat at recusandae enim adipisci culpa qui molestias rem soluta
+        iusto,
+        accusantium distinctio reprehenderit quae dolores. Labore, libero aliquid quos doloremque vero provident
+        facilis
+        ullam maiores?
+        Voluptates voluptate suscipit quidem, nisi dicta, earum facilis autem ab animi recusandae reprehenderit?
+        Tempora, illo architecto accusantium iste molestiae repellendus deserunt eligendi veniam excepturi qui
+        voluptate, dolores fugiat laudantium minus?</p>
+
+    <h2>МГТУ им. Н. Э. Баумана</h2>
+    <script type="text/javascript" charset="utf-8" async
+            src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aea45514fb22376ceb947628dd06064443c89b3ab455ff450f08a99ef99c56592&amp;width=500&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
+
+    <h3>Автор: <a href="https://github.com/Yu-Leo">Lev Yuvensky</a></h3>
 </div>
-</body>
-
-</html>
+{% endblock %}

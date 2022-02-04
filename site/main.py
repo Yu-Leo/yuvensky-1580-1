@@ -1,4 +1,5 @@
 import flask
+from Course import Course
 
 application = flask.Flask(__name__)
 
@@ -26,15 +27,6 @@ def reviews():
 @application.route('/404')
 def null_page():
     return flask.render_template("404.html")
-
-
-class Course:
-    def __init__(self, link, logo_file_name, name, price, description):
-        self.link = link
-        self.logo_file_name = logo_file_name
-        self.name = name
-        self.price = price
-        self.description = description
 
 
 def get_courses():

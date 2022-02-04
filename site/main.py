@@ -28,9 +28,26 @@ def null_page():
     return flask.render_template("404.html")
 
 
+class Course:
+    def __init__(self, link, logo_file_name, name, price, description):
+        self.link = link
+        self.logo_file_name = logo_file_name
+        self.name = name
+        self.price = price
+        self.description = description
+
+
+def get_courses():
+    c1 = Course("python_basics", "python_logo.jpg", "Python. Основы", 0, "Супер курс!")
+    c2 = Course("python_basics", "python_logo.jpg", "Python. Pro", 2000, "Супер курс!")
+    c3 = Course("python_basics", "cpp_logo.png", "C++. Основы", 0, "Супер курс!")
+    c4 = Course("python_basics", "cpp_logo.png", "C++. Pro", 3000, "Супер курс!")
+    return [c1, c2, c3, c4]
+
+
 @application.route('/courses')
 def courses():
-    return flask.render_template("courses.html")
+    return flask.render_template("courses.html", courses=get_courses())
 
 
 @application.route('/python_basics')

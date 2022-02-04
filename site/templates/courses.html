@@ -1,110 +1,84 @@
-<!DOCTYPE html>
-<html lang="ru">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/courses_style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='img/logo_tab.png') }}">
-    <title>Курсы</title>
-</head>
+{% block title %}Курсы{% endblock %}
 
-<body>
-<div class="container">
-    <header>
-        <ul class="header-menu-list">
-            <li class="header-menu-item header-menu-item-img"><a href="index">
-                <img src="{{ url_for('static', filename='img/logo_micro.png') }}" alt="logo_micro"></a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Новости (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="courses">Список курсов</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Рубрики (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Темы (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="null_page">Языки (не готово)</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="about_us">О нас</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="reviews">Отзывы</a></li>
-        </ul>
-    </header>
 
-    <div class="main_body">
-        <h2>Курсы:</h2>
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/courses_style.css') }}">
+{% endblock %}
 
-        <div class="courses-items">
-            <div class="courses-item-card">
-                <a href="python_basics">
-                    <img class="courses-item-card-img" src="{{ url_for('static', filename='img/python_logo.jpg') }}"
-                         alt="logo ">
-                </a>
-                <br>
-                <h3 class="courses-item-card-name">Python. Основы</h3>
-                <h3 class="courses-item-card-price">0p.</h3>
-                <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Necessitatibus omnis
-                    animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
-                    perferendis! </p>
+{% block content %}
+<div class="main_body">
+    <h2>Курсы:</h2>
 
-                <a href="python_basics">
-                    <button class="btn btn-outline-success card-btn">Подробнее</button>
-                </a>
-            </div>
+    <div class="courses-items">
+        <div class="courses-item-card">
+            <a href="python_basics">
+                <img class="courses-item-card-img" src="{{ url_for('static', filename='img/python_logo.jpg') }}"
+                     alt="logo ">
+            </a>
+            <br>
+            <h3 class="courses-item-card-name">Python. Основы</h3>
+            <h3 class="courses-item-card-price">0p.</h3>
+            <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Necessitatibus omnis
+                animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
+                perferendis! </p>
 
-            <div class="courses-item-card">
-                <a href="python_basics"> <img class="courses-item-card-img"
-                                              src="{{ url_for('static', filename='img/python_logo.jpg') }}"
-                                              alt="logo "></a>
-                <br>
-                <h3 class="courses-item-card-name">Python. Для продвинутых</h3>
-                <h3 class="courses-item-card-price">0p.</h3>
-                <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Necessitatibus omnis
-                    animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
-                    perferendis! </p>
-                <a href="python_basics">
-                    <button class="card-btn btn btn-outline-success">Подробнее</button>
-                </a>
-            </div>
+            <a href="python_basics">
+                <button class="btn btn-outline-success card-btn">Подробнее</button>
+            </a>
+        </div>
 
-            <div class="courses-item-card">
-                <a href="python_basics"> <img class="courses-item-card-img"
-                                              src="{{ url_for('static', filename='img/cpp_logo.png') }}"
-                                              alt="logo "></a>
-                <br>
-                <h3 class="courses-item-card-name">C++. Основы</h3>
-                <h3 class="courses-item-card-price">0p.</h3>
-                <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Necessitatibus omnis
-                    animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
-                    perferendis! </p>
-                <a href="python_basics">
-                    <button class="card-btn btn btn-outline-success">Подробнее</button>
-                </a>
-            </div>
+        <div class="courses-item-card">
+            <a href="python_basics"> <img class="courses-item-card-img"
+                                          src="{{ url_for('static', filename='img/python_logo.jpg') }}"
+                                          alt="logo "></a>
+            <br>
+            <h3 class="courses-item-card-name">Python. Для продвинутых</h3>
+            <h3 class="courses-item-card-price">0p.</h3>
+            <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Necessitatibus omnis
+                animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
+                perferendis! </p>
+            <a href="python_basics">
+                <button class="card-btn btn btn-outline-success">Подробнее</button>
+            </a>
+        </div>
 
-            <div class="courses-item-card">
-                <a href="python_basics"><img class="courses-item-card-img"
-                                             src="{{ url_for('static', filename='img/cpp_logo.png') }}"
-                                             alt="logo "></a>
-                <br>
-                <h3 class="courses-item-card-name">C++. Для продвинутых</h3>
-                <h3 class="courses-item-card-price">0p.</h3>
-                <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Necessitatibus omnis
-                    animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
-                    perferendis! </p>
-                <a href="python_basics">
-                    <button class="card-btn btn btn-outline-success">Подробнее</button>
-                </a>
-            </div>
+        <div class="courses-item-card">
+            <a href="python_basics"> <img class="courses-item-card-img"
+                                          src="{{ url_for('static', filename='img/cpp_logo.png') }}"
+                                          alt="logo "></a>
+            <br>
+            <h3 class="courses-item-card-name">C++. Основы</h3>
+            <h3 class="courses-item-card-price">0p.</h3>
+            <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Necessitatibus omnis
+                animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
+                perferendis! </p>
+            <a href="python_basics">
+                <button class="card-btn btn btn-outline-success">Подробнее</button>
+            </a>
+        </div>
 
+        <div class="courses-item-card">
+            <a href="python_basics"><img class="courses-item-card-img"
+                                         src="{{ url_for('static', filename='img/cpp_logo.png') }}"
+                                         alt="logo "></a>
+            <br>
+            <h3 class="courses-item-card-name">C++. Для продвинутых</h3>
+            <h3 class="courses-item-card-price">0p.</h3>
+            <p class="courses-item-card-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Necessitatibus omnis
+                animi blanditiis, dolores incidunt nam quae doloribus illo totam molestiae dolor, corporis
+                perferendis! </p>
+            <a href="python_basics">
+                <button class="card-btn btn btn-outline-success">Подробнее</button>
+            </a>
         </div>
 
     </div>
-    <footer>
-        <p> ©ITLION. Автор: <a class="footer-author" href="https://github.com/Yu-Leo" target="_blank">Lev
-            Yuvensky</a></p>
-    </footer>
 </div>
-</body>
-
-</html>
+{% endblock %}

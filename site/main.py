@@ -1,8 +1,11 @@
+import os
 import flask
 from flask_sqlalchemy import SQLAlchemy
 
+DATABASE_FILE_NAME = "database.db"
+
 application = flask.Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+application.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DATABASE_FILE_NAME}'
 database = SQLAlchemy(application)
 
 
@@ -38,6 +41,58 @@ class ActiveCourses(database.Model):
     course = database.relationship('Courses', backref=database.backref('activecourses', lazy=False))
     percentage_of_passing = database.Column(database.Integer, nullable=False)
     mark = database.Column(database.Float, nullable=False)
+
+
+def create_database_structure():
+    database.create_all()
+
+
+def add_courses():
+    course_python_basics = Courses(link="python_basics",
+                                   logo_file_name="python_logo.jpg",
+                                   name="Python. Основы",
+                                   price=0,
+                                   description="Супер курс по основам Python",
+                                   lessons_number=5,
+                                   rating=100,
+                                   passage_time=15)
+
+    course_python_pro = Courses(link="python_pro",
+                                logo_file_name="python_logo.jpg",
+                                name="Python. Pro",
+                                price=5000,
+                                description="Супер курс с профессиональными фишками Python ",
+                                lessons_number=5,
+                                rating=200,
+                                passage_time=30)
+
+    course_cpp_basics = Courses(link="cpp_basics",
+                                logo_file_name="cpp_logo.png",
+                                name="C++. Основы",
+                                price=0,
+                                description="Супер курс по основам C++",
+                                lessons_number=5,
+                                rating=200,
+                                passage_time=30)
+
+    course_cpp_pro = Courses(link="cpp_pro",
+                             logo_file_name="cpp_logo.png",
+                             name="C++. Pro",
+                             price=5000,
+                             description="Супер курс с профессиональными фишками C++",
+                             lessons_number=5,
+                             rating=200,
+                             passage_time=30)
+
+    database.session.add(course_python_basics)
+    database.session.add(course_python_pro)
+    database.session.add(course_cpp_basics)
+    database.session.add(course_cpp_pro)
+    database.session.commit()
+
+
+def does_database_file_exist() -> bool:
+    return os.path.isfile(DATABASE_FILE_NAME)
 
 
 @application.errorhandler(404)
@@ -80,4 +135,7 @@ def python_basics():
 
 
 if __name__ == '__main__':
+    if not does_database_file_exist():
+        create_database_structure()
+        add_courses()
     application.run(debug=True)

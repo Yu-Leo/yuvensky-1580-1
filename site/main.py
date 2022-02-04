@@ -3,6 +3,11 @@ import flask
 application = flask.Flask(__name__)
 
 
+@application.errorhandler(404)
+def page_not_found(e):
+    return flask.render_template('404.html'), 404
+
+
 @application.route('/index')
 def main_page():
     return flask.render_template("index.html")
@@ -18,9 +23,9 @@ def reviews():
     return flask.render_template("reviews.html")
 
 
-@application.route('/null_page')
+@application.route('/404')
 def null_page():
-    return flask.render_template("null_page.html")
+    return flask.render_template("404.html")
 
 
 @application.route('/courses')

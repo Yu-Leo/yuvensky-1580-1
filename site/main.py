@@ -122,7 +122,7 @@ def get_courses(min_price: Optional[str], max_price: Optional[str]) -> list:
     elif min_price is None and max_price is not None:
         filtered = list(filter(lambda course: course.price <= int(max_price), all_courses))
     else:
-        filtered = courses
+        filtered = all_courses
     return filtered
 
 

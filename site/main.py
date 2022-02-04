@@ -1,6 +1,7 @@
 import os
 import flask
 from flask_sqlalchemy import SQLAlchemy
+from typing import Optional
 
 DATABASE_FILE_NAME = "database.db"
 
@@ -59,7 +60,7 @@ def add_courses():
                                    logo_file_name="python_logo.jpg",
                                    name="Python. Основы",
                                    price=0,
-                                   description="Супер курс по основам Python",
+                                   description="Курс по основам Python 3",
                                    lessons_number=5,
                                    rating=100,
                                    passage_time=15)
@@ -67,7 +68,7 @@ def add_courses():
     course_python_pro = Courses(link="python_pro",
                                 logo_file_name="python_logo.jpg",
                                 name="Python. Pro",
-                                price=5000,
+                                price=3000,
                                 description="Супер курс с профессиональными фишками Python ",
                                 lessons_number=5,
                                 rating=200,
@@ -77,7 +78,7 @@ def add_courses():
                                 logo_file_name="cpp_logo.png",
                                 name="C++. Основы",
                                 price=0,
-                                description="Супер курс по основам C++",
+                                description="Курс по основам C++",
                                 lessons_number=5,
                                 rating=200,
                                 passage_time=30)
@@ -112,8 +113,17 @@ def add_reviews():
     database.session.commit()
 
 
-def get_courses() -> list:
-    return Courses.query.all()
+def get_courses(min_price: Optional[str], max_price: Optional[str]) -> list:
+    courses = Courses.query.all()
+    if min_price is not None and max_price is not None:
+        filtered = list(filter(lambda course: int(min_price) <= course.price <= int(max_price), courses))
+    elif min_price is not None and max_price is None:
+        filtered = list(filter(lambda course: int(min_price) <= course.price, courses))
+    elif min_price is None and max_price is not None:
+        filtered = list(filter(lambda course: course.price <= int(max_price), courses))
+    else:
+        filtered = courses
+    return filtered
 
 
 def get_course_by_link(link: str):
@@ -172,7 +182,10 @@ def null_page():
 
 @application.route('/courses')
 def courses():
-    return flask.render_template("courses.html", courses=get_courses())
+    print("args: ", flask.request.args)
+    min_price = flask.request.args.get('min_price', None)
+    max_price = flask.request.args.get('max_price', None)
+    return flask.render_template("courses.html", courses=get_courses(min_price, max_price))
 
 
 @application.route('/course/<course>')

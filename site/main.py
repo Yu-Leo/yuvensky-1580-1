@@ -114,21 +114,21 @@ def add_reviews():
 
 
 def get_courses(min_price: Optional[str], max_price: Optional[str]) -> list:
-    courses = Courses.query.all()
+    all_courses = Courses.query.all()
     if min_price is not None and max_price is not None:
-        filtered = list(filter(lambda course: int(min_price) <= course.price <= int(max_price), courses))
+        filtered = list(filter(lambda course: int(min_price) <= course.price <= int(max_price), all_courses))
     elif min_price is not None and max_price is None:
-        filtered = list(filter(lambda course: int(min_price) <= course.price, courses))
+        filtered = list(filter(lambda course: int(min_price) <= course.price, all_courses))
     elif min_price is None and max_price is not None:
-        filtered = list(filter(lambda course: course.price <= int(max_price), courses))
+        filtered = list(filter(lambda course: course.price <= int(max_price), all_courses))
     else:
         filtered = courses
     return filtered
 
 
 def get_course_by_link(link: str):
-    courses: list = Courses.query.all()
-    filtered = list(filter(lambda course: course.link == link, courses))
+    all_courses: list = Courses.query.all()
+    filtered = list(filter(lambda course: course.link == link, all_courses))
     return filtered[0] if len(filtered) == 1 else None
 
 

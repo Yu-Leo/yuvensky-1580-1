@@ -2,9 +2,15 @@
 
 {% block title %}Отзывы{% endblock %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reviews_style.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="main_body">
     <h1>Отзывы:</h1>
+
     <form action="#">
         Ваше имя: <input type="text" name="name" placeholder="Иван"> <br>
         Почта для обратной связи: <input type="email" name="email" placeholder="example@gmail.com"> <br>
@@ -14,5 +20,19 @@
         <input type="submit" value="Сохранить">
         <input type="reset" value="Очистить">
     </form>
+
+    {% if reviews %}
+    <div class="reviews-area">
+        <h3>Отзывы</h3>
+        {% for review in reviews %}
+        <div class="reviews">
+            <div class="name">{{review.name}}</div>
+            <div class="email">{{review.email}}</div>
+            <div class="text">{{review.text}}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

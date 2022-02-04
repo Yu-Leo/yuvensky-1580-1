@@ -123,7 +123,7 @@ def get_course_by_link(link: str):
 
 
 def get_reviews() -> list:
-    return Reviews.query.all()
+    return Reviews.query.all()[::-1]
 
 
 def does_database_file_exist() -> bool:
@@ -150,8 +150,18 @@ def about_us():
     return flask.render_template("about_us.html")
 
 
-@application.route('/reviews')
+@application.route('/reviews', methods=['GET', 'POST'])
 def reviews():
+    if flask.request.method == 'POST':
+        name = flask.request.form.get('name')
+        email = flask.request.form.get('email')
+        text = flask.request.form.get('text')
+        if name != "" and email != "" and text != "":
+            review = Reviews(name=name,
+                             email=email,
+                             text=text)
+            database.session.add(review)
+            database.session.commit()
     return flask.render_template("reviews.html", reviews=get_reviews())
 
 

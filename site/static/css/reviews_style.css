@@ -1,0 +1,29 @@
+.reviews-area {
+    width: 100%;
+    background-color: rgb(169, 209, 142);
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.reviews {
+    width: 100%;
+    background-color: #D199EA;
+    outline: solid #6B2462 1px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.name {
+    font-size: 12;
+    color: #030097;
+}
+
+.email {
+    font-size: 12;
+    color: #030097;
+}
+
+.text {
+    font-size: 20;
+    color: #000000;
+}

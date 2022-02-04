@@ -43,6 +43,13 @@ class ActiveCourses(database.Model):
     mark = database.Column(database.Float, nullable=False)
 
 
+class Reviews(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    name = database.Column(database.String(80), nullable=False)
+    email = database.Column(database.String(80), nullable=False)
+    text = database.Column(database.Text)
+
+
 def create_database_structure():
     database.create_all()
 
@@ -91,6 +98,34 @@ def add_courses():
     database.session.commit()
 
 
+def add_reviews():
+    review_1 = Reviews(name="Иван",
+                       email="vanya@gmail.com",
+                       text="Отличный сайт!")
+
+    review_2 = Reviews(name="Антон",
+                       email="anton@yandex.ru",
+                       text="Курсы супер!")
+
+    database.session.add(review_1)
+    database.session.add(review_2)
+    database.session.commit()
+
+
+def get_courses() -> list:
+    return Courses.query.all()
+
+
+def get_course_by_link(link: str):
+    courses: list = Courses.query.all()
+    filtered = list(filter(lambda course: course.link == link, courses))
+    return filtered[0] if len(filtered) == 1 else None
+
+
+def get_reviews() -> list:
+    return Reviews.query.all()
+
+
 def does_database_file_exist() -> bool:
     return os.path.isfile(DATABASE_FILE_NAME)
 
@@ -117,22 +152,12 @@ def about_us():
 
 @application.route('/reviews')
 def reviews():
-    return flask.render_template("reviews.html")
+    return flask.render_template("reviews.html", reviews=get_reviews())
 
 
 @application.route('/404')
 def null_page():
     return flask.render_template("404.html")
-
-
-def get_courses() -> list:
-    return Courses.query.all()
-
-
-def get_course_by_link(link: str):
-    courses: list = Courses.query.all()
-    filtered = list(filter(lambda course: course.link == link, courses))
-    return filtered[0] if len(filtered) == 1 else None
 
 
 @application.route('/courses')
@@ -150,4 +175,5 @@ if __name__ == '__main__':
     if not does_database_file_exist():
         create_database_structure()
         add_courses()
+        add_reviews()
     application.run(debug=True)

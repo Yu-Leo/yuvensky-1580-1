@@ -16,7 +16,7 @@
 
         {% for course in courses%}
         <div class="courses-item-card">
-            <a href="{{course.link}}">
+            <a href="course/{{course.link}}">
                 <img class="courses-item-card-img"
                      src="{{ url_for('static', filename='img/' + course.logo_file_name) }}"
                      alt="logo ">
@@ -26,7 +26,7 @@
             <h3 class="courses-item-card-price">{{course.price}}p.</h3>
             <p class="courses-item-card-description">{{course.description}}</p>
 
-            <a href="python_basics">
+            <a href="course/{{course.link}}">
                 <button class="btn btn-outline-success card-btn">Подробнее</button>
             </a>
         </div>

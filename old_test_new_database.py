@@ -1,4 +1,4 @@
-import create_database_structure as new_db
+import old_create_database_structure as new_db
 import datetime
 
 acc1 = new_db.Accounts(login="leo", email="leo@gmail.com", password="123", total_rating=100,

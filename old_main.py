@@ -1,4 +1,4 @@
-from database import Database
+from old_database import Database
 
 
 class Phrases:

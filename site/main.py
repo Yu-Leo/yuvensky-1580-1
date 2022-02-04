@@ -1,11 +1,47 @@
 import flask
-from Course import Course
+from flask_sqlalchemy import SQLAlchemy
 
 application = flask.Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+database = SQLAlchemy(application)
+
+
+class Accounts(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    login = database.Column(database.String(80), unique=True, nullable=False)
+    first_name = database.Column(database.String(80))
+    last_name = database.Column(database.String(80))
+    email = database.Column(database.String(80), unique=True, nullable=False)
+    password = database.Column(database.String(80), nullable=False)
+    total_rating = database.Column(database.Integer, nullable=False)
+    registration_date = database.Column(database.DateTime, nullable=False)
+    birthday = database.Column(database.Date)
+
+
+class Courses(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    link = database.Column(database.String(80), nullable=False)
+    logo_file_name = database.Column(database.String(80), nullable=False)
+    name = database.Column(database.String(80), unique=True, nullable=False)
+    price = database.Column(database.Integer, nullable=False)
+    description = database.Column(database.Text)
+    lessons_number = database.Column(database.Integer, nullable=False)
+    rating = database.Column(database.Integer)
+    passage_time = database.Column(database.Integer)
+
+
+class ActiveCourses(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    account_id = database.Column(database.Integer, database.ForeignKey('accounts.id'), nullable=False)
+    account = database.relationship('Accounts', backref=database.backref('activecourses', lazy=False))
+    course_id = database.Column(database.Integer, database.ForeignKey('courses.id'), nullable=False)
+    course = database.relationship('Courses', backref=database.backref('activecourses', lazy=False))
+    percentage_of_passing = database.Column(database.Integer, nullable=False)
+    mark = database.Column(database.Float, nullable=False)
 
 
 @application.errorhandler(404)
-def page_not_found(e):
+def page_not_found(error):
     return flask.render_template('404.html'), 404
 
 
@@ -29,12 +65,8 @@ def null_page():
     return flask.render_template("404.html")
 
 
-def get_courses():
-    c1 = Course("python_basics", "python_logo.jpg", "Python. Основы", 0, "Супер курс!")
-    c2 = Course("python_basics", "python_logo.jpg", "Python. Pro", 2000, "Супер курс!")
-    c3 = Course("python_basics", "cpp_logo.png", "C++. Основы", 0, "Супер курс!")
-    c4 = Course("python_basics", "cpp_logo.png", "C++. Pro", 3000, "Супер курс!")
-    return [c1, c2, c3, c4]
+def get_courses() -> list:
+    return Courses.query.all()
 
 
 @application.route('/courses')

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from database import Database
+from old_database import Database
 
 
 class TestDatabase(unittest.TestCase):

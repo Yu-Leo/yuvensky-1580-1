@@ -23,9 +23,12 @@ class Accounts(database.Model):
 
 class Courses(database.Model):
     id = database.Column(database.Integer, primary_key=True)
+    link = database.Column(database.String(80), unique=True, nullable=False)
+    logo_file_name = database.Column(database.String(80), unique=True, nullable=False)
     name = database.Column(database.String(80), unique=True, nullable=False)
-    lessons_number = database.Column(database.Integer, nullable=False)
+    price = database.Column(database.Integer, nullable=False)
     description = database.Column(database.Text)
+    lessons_number = database.Column(database.Integer, nullable=False)
     rating = database.Column(database.Integer)
     passage_time = database.Column(database.Integer)
 

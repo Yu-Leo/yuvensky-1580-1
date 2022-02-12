@@ -146,12 +146,7 @@ def page_not_found(error):
 
 
 @application.route('/')
-def main_page_1():
-    return flask.render_template("index.html")
-
-
-@application.route('/index')
-def main_page_2():
+def main_page():
     return flask.render_template("index.html")
 
 

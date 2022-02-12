@@ -177,7 +177,6 @@ def null_page():
 
 @application.route('/courses')
 def courses():
-    print("args: ", flask.request.args)
     min_price = flask.request.args.get('min_price', None)
     max_price = flask.request.args.get('max_price', None)
     return flask.render_template("courses.html", courses=get_courses(min_price, max_price))
@@ -185,7 +184,6 @@ def courses():
 
 @application.route('/course/<course>')
 def show_course_page(course):
-    print(course)
     return flask.render_template('course_page.html', course=get_course_by_link(course))
 
 

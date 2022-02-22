@@ -150,6 +150,22 @@ def main_page():
     return flask.render_template("index.html")
 
 
+@application.route('/login', methods=['GET', 'POST'])
+def login():
+    if flask.request.method == 'POST':
+        name = flask.request.form.get('name')
+        password = flask.request.form.get('password')
+        try:
+            if Users.query.filter_by(name=name).one().validate(password):
+                flask.session['name'] = name
+                flash(f'Welcome back, {name}', 'success')
+                return redirect(url_for('index'), code=301)
+            flash('Wrong login or password', 'warning')
+        except sqlalchemy.exc.NoResultFound:
+            flash('Wrong login or password', 'danger')
+    return flask.render_template('login.html')
+
+
 @application.route('/about_us')
 def about_us():
     return flask.render_template("about_us.html")

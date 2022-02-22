@@ -33,6 +33,12 @@ header {
 	color: #9B5635;
 }
 
+.login-header-btn {
+    padding: 3px;
+    outline: 1px solid #236850;
+	border-radius: 3px;
+}
+
 .main_body {
 	width: 70%;
 	margin: 0 auto;

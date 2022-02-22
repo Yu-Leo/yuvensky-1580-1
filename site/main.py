@@ -183,11 +183,11 @@ def login():
         try:
             if Accounts.query.filter_by(login=login).one().validate(password):
                 flask.session["login"] = login
-                flask.flash(f"Welcome back, {login}", "success")
+                flask.flash(f"Добро пожаловать, {login}!", "success")
                 return flask.redirect(flask.url_for("main_page"), code=301)
-            flask.flash("Wrong login or password", "warning")
+            flask.flash("Неправильный пароль", "warning")
         except sqlalchemy.exc.NoResultFound:
-            flask.flash("Wrong login or password", "danger")
+            flask.flash("Неправильный логин", "danger")
 
     return flask.render_template("login.html")
 
@@ -202,20 +202,21 @@ def logout():
 @application.route('/<login>', methods=['GET', 'POST'])
 def profile(login):
     if flask.session.get('login') == login:
-        if (u := Accounts.query.filter_by(login=login)) is not None:
+        if (Accounts.query.filter_by(login=login)) is not None:
+            user = Accounts.query.filter_by(login=login)
+            user = user.one()
             if flask.request.method == 'POST':
-                u = u.one()
                 old = flask.request.form.get('old_password')
                 new = flask.request.form.get('new_password')
                 if old == new:
                     flask.flash('Новый пароль тот же, что и старый', 'warning')
-                elif u.validate(old):
-                    u.set_password(new)
+                elif user.validate(old):
+                    user.set_password(new)
                     flask.flash('Пароль изменен', 'success')
-                    database.session.add(u)
+                    database.session.add(user)
                     database.session.commit()
-            return flask.render_template('profile.html', user=u)
-    flask.flash('Please authenticate', 'warning')
+            return flask.render_template('profile.html', user=user)
+    flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
     return flask.redirect(flask.url_for('login'), code=301)
 
 

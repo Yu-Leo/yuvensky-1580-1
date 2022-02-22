@@ -1,0 +1,31 @@
+.profile {
+    margin-top: 20px;
+}
+
+.password_form {
+    border-radius: 5px;
+    background-color: #5EC4CD;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px 15px;
+}
+
+.form-control {
+    margin-bottom: 20px;
+    height: 40px;
+}
+
+.change-password-title {
+    margin-bottom: 20px;
+}
+
+.change-button {
+	border-color: #FF7800;
+    color: #A66225;
+    background-color: #FFD6B2;
+}
+
+.change-button:hover {
+    background-color: #FFB573;
+    border-color: #FF7800;
+}

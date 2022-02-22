@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/courses_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main_body">
+    <div class="profile">
+        <h2>Профиль {{user.name}}</h2>
+        <form method="post">
+            <h6> Сменить пароль </h6>
+            <input type="password" class="form-control" name="old_password"
+                   placeholder="Старый пароль">
+
+            <input type="password" class="form-control" name="new_password"
+                   placeholder="Новый пароль" style="margin-top: 10px;">
+            <input type="submit" class="buy btn btn-outline-primary" value="Сменить"
+            >
+        </form>
+    </div>
+</div>
+{% endblock %}

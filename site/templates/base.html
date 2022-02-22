@@ -19,12 +19,13 @@
                 <img src="{{ url_for('static', filename='img/logo_micro.png') }}" alt="logo_micro"></a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/404">Новости (не готово)</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/courses">Список курсов</a></li>
-            <li class="header-menu-item header-menu-item-text"><a href="/404">Рубрики (не готово)</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/404">Темы (не готово)</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/404">Языки (не готово)</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/about_us">О нас</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/reviews">Отзывы</a></li>
             {% if session['login'] %}
+            <li class="header-menu-item header-menu-item-text profile-header-btn"><a href="/{{session['login']}}">{{session['login']}}</a>
+            </li>
             <li class="header-menu-item header-menu-item-text login-header-btn"><a href="/logout">Выйти</a></li>
             {% else %}
             <li class="header-menu-item header-menu-item-text login-header-btn"><a href="/login">Войти</a></li>

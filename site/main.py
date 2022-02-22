@@ -8,9 +8,9 @@ from typing import Optional
 DATABASE_FILE_NAME = "database.db"
 
 application = flask.Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DATABASE_FILE_NAME}'
+application.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE_FILE_NAME}"
 database = SQLAlchemy(application)
-application.secret_key = 'secret'
+application.secret_key = "secret"
 
 
 class Accounts(database.Model):
@@ -27,7 +27,7 @@ class Accounts(database.Model):
     def validate(self, password):
         print("comp:", self.password, password)
         return self.password == password
-        # return self.password == hashlib.md5(password.encode('utf8')).hexdigest()
+        # return self.password == hashlib.md5(password.encode("utf8")).hexdigest()
 
 
 class Courses(database.Model):
@@ -44,10 +44,10 @@ class Courses(database.Model):
 
 class ActiveCourses(database.Model):
     id = database.Column(database.Integer, primary_key=True)
-    account_id = database.Column(database.Integer, database.ForeignKey('accounts.id'), nullable=False)
-    account = database.relationship('Accounts', backref=database.backref('activecourses', lazy=False))
-    course_id = database.Column(database.Integer, database.ForeignKey('courses.id'), nullable=False)
-    course = database.relationship('Courses', backref=database.backref('activecourses', lazy=False))
+    account_id = database.Column(database.Integer, database.ForeignKey("accounts.id"), nullable=False)
+    account = database.relationship("Accounts", backref=database.backref("activecourses", lazy=False))
+    course_id = database.Column(database.Integer, database.ForeignKey("courses.id"), nullable=False)
+    course = database.relationship("Courses", backref=database.backref("activecourses", lazy=False))
     percentage_of_passing = database.Column(database.Integer, nullable=False)
     mark = database.Column(database.Float, nullable=False)
 
@@ -164,42 +164,49 @@ def does_database_file_exist() -> bool:
 
 @application.errorhandler(404)
 def page_not_found(error):
-    return flask.render_template('404.html'), 404
+    return flask.render_template("404.html"), 404
 
 
-@application.route('/')
+@application.route("/")
 def main_page():
     return flask.render_template("index.html")
 
 
-@application.route('/login', methods=['GET', 'POST'])
+@application.route("/login", methods=["GET", "POST"])
 def login():
-    if flask.request.method == 'POST':
-        login = flask.request.form.get('login')
-        password = flask.request.form.get('password')
+    if flask.request.method == "POST":
+        login = flask.request.form.get("login")
+        password = flask.request.form.get("password")
         try:
             if Accounts.query.filter_by(login=login).one().validate(password):
-                flask.session['login'] = login
-                flask.flash(f'Welcome back, {login}', 'success')
-                return flask.redirect(flask.url_for('main_page'), code=301)
-            flask.flash('Wrong login or password', 'warning')
+                flask.session["login"] = login
+                flask.flash(f"Welcome back, {login}", "success")
+                return flask.redirect(flask.url_for("main_page"), code=301)
+            flask.flash("Wrong login or password", "warning")
         except sqlalchemy.exc.NoResultFound:
-            flask.flash('Wrong login or password', 'danger')
+            flask.flash("Wrong login or password", "danger")
 
-    return flask.render_template('login.html')
+    return flask.render_template("login.html")
 
 
-@application.route('/about_us')
+@application.route("/logout")
+def logout():
+    if flask.session.get("login"):
+        flask.session.pop("login")
+    return flask.redirect("/", code=302)
+
+
+@application.route("/about_us")
 def about_us():
     return flask.render_template("about_us.html")
 
 
-@application.route('/reviews', methods=['GET', 'POST'])
+@application.route("/reviews", methods=["GET", "POST"])
 def reviews():
-    if flask.request.method == 'POST':
-        name = flask.request.form.get('name')
-        email = flask.request.form.get('email')
-        text = flask.request.form.get('text')
+    if flask.request.method == "POST":
+        name = flask.request.form.get("name")
+        email = flask.request.form.get("email")
+        text = flask.request.form.get("text")
         if name != "" and email != "" and text != "":
             review = Reviews(name=name,
                              email=email,
@@ -209,24 +216,24 @@ def reviews():
     return flask.render_template("reviews.html", reviews=get_reviews())
 
 
-@application.route('/404')
+@application.route("/404")
 def null_page():
     return flask.render_template("404.html")
 
 
-@application.route('/courses')
+@application.route("/courses")
 def courses():
-    min_price = flask.request.args.get('min_price', None)
-    max_price = flask.request.args.get('max_price', None)
+    min_price = flask.request.args.get("min_price", None)
+    max_price = flask.request.args.get("max_price", None)
     return flask.render_template("courses.html", courses=get_courses(min_price, max_price))
 
 
-@application.route('/course/<course>')
+@application.route("/course/<course>")
 def show_course_page(course):
-    return flask.render_template('course_page.html', course=get_course_by_link(course))
+    return flask.render_template("course_page.html", course=get_course_by_link(course))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if not does_database_file_exist():
         create_database_structure()
         add_courses()

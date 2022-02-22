@@ -24,7 +24,11 @@
             <li class="header-menu-item header-menu-item-text"><a href="/404">Языки (не готово)</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/about_us">О нас</a></li>
             <li class="header-menu-item header-menu-item-text"><a href="/reviews">Отзывы</a></li>
+            {% if session['login'] %}
+            <li class="header-menu-item header-menu-item-text login-header-btn"><a href="/logout">Выйти</a></li>
+            {% else %}
             <li class="header-menu-item header-menu-item-text login-header-btn"><a href="/login">Войти</a></li>
+            {% endif %}
         </ul>
 
     </header>

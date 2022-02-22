@@ -1,5 +1,7 @@
+import datetime
 import os
 import flask
+import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from typing import Optional
 
@@ -8,6 +10,7 @@ DATABASE_FILE_NAME = "database.db"
 application = flask.Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DATABASE_FILE_NAME}'
 database = SQLAlchemy(application)
+application.secret_key = 'secret'
 
 
 class Accounts(database.Model):
@@ -20,6 +23,11 @@ class Accounts(database.Model):
     total_rating = database.Column(database.Integer, nullable=False)
     registration_date = database.Column(database.DateTime, nullable=False)
     birthday = database.Column(database.Date)
+
+    def validate(self, password):
+        print("comp:", self.password, password)
+        return self.password == password
+        # return self.password == hashlib.md5(password.encode('utf8')).hexdigest()
 
 
 class Courses(database.Model):
@@ -113,6 +121,20 @@ def add_reviews():
     database.session.commit()
 
 
+def add_accounts():
+    leo = Accounts(
+        login="leo",
+        first_name="Leo",
+        last_name="Yu",
+        email="l@gmail.com",
+        password="12345",
+        total_rating=100,
+        registration_date=datetime.datetime.now(),
+        birthday=datetime.datetime.now())
+    database.session.add(leo)
+    database.session.commit()
+
+
 def get_courses(min_price: Optional[str], max_price: Optional[str]) -> list:
     all_courses = Courses.query.all()
     if min_price is not None and max_price is not None:
@@ -153,16 +175,17 @@ def main_page():
 @application.route('/login', methods=['GET', 'POST'])
 def login():
     if flask.request.method == 'POST':
-        name = flask.request.form.get('name')
+        login = flask.request.form.get('login')
         password = flask.request.form.get('password')
         try:
-            if Users.query.filter_by(name=name).one().validate(password):
-                flask.session['name'] = name
-                flash(f'Welcome back, {name}', 'success')
-                return redirect(url_for('index'), code=301)
-            flash('Wrong login or password', 'warning')
+            if Accounts.query.filter_by(login=login).one().validate(password):
+                flask.session['login'] = login
+                flask.flash(f'Welcome back, {login}', 'success')
+                return flask.redirect(flask.url_for('main_page'), code=301)
+            flask.flash('Wrong login or password', 'warning')
         except sqlalchemy.exc.NoResultFound:
-            flash('Wrong login or password', 'danger')
+            flask.flash('Wrong login or password', 'danger')
+
     return flask.render_template('login.html')
 
 
@@ -208,4 +231,5 @@ if __name__ == '__main__':
         create_database_structure()
         add_courses()
         add_reviews()
+        add_accounts()
     application.run(debug=True)

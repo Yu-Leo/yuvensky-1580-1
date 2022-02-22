@@ -64,6 +64,10 @@ footer>p {
 	color: #9B5635;
 }
 
+.message {
+    margin-top: 20px;
+}
+
 @media screen and (max-width: 1200px) {
 	/*
 	.header-menu-list {

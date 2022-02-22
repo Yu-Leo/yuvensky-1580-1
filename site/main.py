@@ -25,9 +25,12 @@ class Accounts(database.Model):
     birthday = database.Column(database.Date)
 
     def validate(self, password):
-        print("comp:", self.password, password)
         return self.password == password
         # return self.password == hashlib.md5(password.encode("utf8")).hexdigest()
+
+    def set_password(self, password):
+        self.password = password
+        # self.password = hashlib.md5(password.encode('utf8')).hexdigest(
 
 
 class Courses(database.Model):
@@ -194,6 +197,26 @@ def logout():
     if flask.session.get("login"):
         flask.session.pop("login")
     return flask.redirect("/", code=302)
+
+
+@application.route('/<login>', methods=['GET', 'POST'])
+def profile(login):
+    if flask.session.get('login') == login:
+        if (u := Accounts.query.filter_by(login=login)) is not None:
+            if flask.request.method == 'POST':
+                u = u.one()
+                old = flask.request.form.get('old_password')
+                new = flask.request.form.get('new_password')
+                if old == new:
+                    flask.flash('Новый пароль тот же, что и старый', 'warning')
+                elif u.validate(old):
+                    u.set_password(new)
+                    flask.flash('Пароль изменен', 'success')
+                    database.session.add(u)
+                    database.session.commit()
+            return flask.render_template('profile.html', user=u)
+    flask.flash('Please authenticate', 'warning')
+    return flask.redirect(flask.url_for('login'), code=301)
 
 
 @application.route("/about_us")

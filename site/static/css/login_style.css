@@ -1,0 +1,24 @@
+.login_form {
+    border-radius: 5px;
+    background-color: #5EC4CD;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px 15px;
+}
+
+.form-control {
+    margin-bottom: 20px;
+    height: 40px;
+}
+
+
+.login-button {
+	border-color: #FF7800;
+    color: #A66225;
+    background-color: #FFD6B2;
+}
+
+.login-button:hover {
+    background-color: #FFB573;
+    border-color: #FF7800;
+}

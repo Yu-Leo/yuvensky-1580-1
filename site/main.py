@@ -4,6 +4,7 @@ import flask
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from typing import Optional
+import hashlib
 
 DATABASE_FILE_NAME = "database.db"
 
@@ -25,12 +26,10 @@ class Accounts(database.Model):
     birthday = database.Column(database.Date)
 
     def validate(self, password):
-        return self.password == password
-        # return self.password == hashlib.md5(password.encode("utf8")).hexdigest()
+        return self.password == hashlib.md5(password.encode("utf8")).hexdigest()
 
     def set_password(self, password):
-        self.password = password
-        # self.password = hashlib.md5(password.encode('utf8')).hexdigest(
+        self.password = hashlib.md5(password.encode('utf8')).hexdigest()
 
 
 class Courses(database.Model):
@@ -142,10 +141,11 @@ def add_accounts():
         first_name="Leo",
         last_name="Yu",
         email="l@gmail.com",
-        password="12345",
+        password="None",
         total_rating=100,
         registration_date=datetime.datetime.now(),
         birthday=datetime.datetime.now())
+    leo.set_password("leo")
     database.session.add(leo)
     database.session.commit()
 

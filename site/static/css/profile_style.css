@@ -29,6 +29,17 @@
     background-color: #89DEE6;
 }
 
+
+.buy-button {
+	border-color: #6D89D5;
+    color: white;
+    background-color: #6D89D5;
+}
+
+.buy-button:hover {
+    background-color: #A2E0E6;
+}
+
 .course-in-active {
     background-color: #FFD273;
 }
@@ -42,6 +53,10 @@
     color: #6B2462;
 }
 
+.course-in-cart_item {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
 
 .password_form {
     background-color: #5EC4CD;

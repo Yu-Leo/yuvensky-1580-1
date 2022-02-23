@@ -61,6 +61,10 @@ class Cart(database.Model):
     account = database.relationship("Accounts", backref=database.backref("cart", lazy=False))
     course_id = database.Column(database.Integer, database.ForeignKey("courses.id"), nullable=False)
     course = database.relationship("Courses", backref=database.backref("cart", lazy=False))
+    status = database.Column(database.Boolean, nullable=False)
+
+    def set_not_active(self):
+        self.status = False
 
 
 class Reviews(database.Model):
@@ -219,17 +223,31 @@ def profile(login):
         if (Accounts.query.filter_by(login=login)) is not None:
             user = Accounts.query.filter_by(login=login)
             user = user.one()
-
             if flask.request.method == 'POST':
                 old = flask.request.form.get('old_password')
                 new = flask.request.form.get('new_password')
-                if old == new:
-                    flask.flash('Новый пароль тот же, что и старый', 'warning')
-                elif user.validate(old):
-                    user.set_password(new)
-                    flask.flash('Пароль изменен', 'success')
-                    database.session.add(user)
-                    database.session.commit()
+
+                if old == new == None:
+                    flask.flash('Курсы куплены!', 'success')
+
+                    cart_courses = get_active_cart_for_user(user.id)
+                    for cc in cart_courses:
+                        cc.set_not_active()
+                        ac = ActiveCourses(account_id=user.id,
+                                           course_id=cc.course_id,
+                                           percentage_of_passing=0,
+                                           mark=0)
+                        database.session.add(ac)
+                        database.session.add(cc)
+                        database.session.commit()
+                else:
+                    if old == new:
+                        flask.flash('Новый пароль тот же, что и старый', 'warning')
+                    elif user.validate(old):
+                        user.set_password(new)
+                        flask.flash('Пароль изменен', 'success')
+                        database.session.add(user)
+                        database.session.commit()
 
             return flask.render_template('profile.html',
                                          user=user,
@@ -289,11 +307,20 @@ def get_active_courses_for_user(user_id):
     return result
 
 
+def get_active_cart_for_user(user_id):
+    result = []
+    all_cart = Cart.query.all()
+    for c in all_cart:
+        if c.account_id == user_id and c.status:
+            result.append(c)
+    return result
+
+
 def get_cart_for_user(user_id):
     result = []
     all_cart = Cart.query.all()
     for c in all_cart:
-        if c.account_id == user_id:
+        if c.account_id == user_id and c.status:
             result.append(get_course_by_id(c.course_id))
     return result
 
@@ -306,24 +333,15 @@ def show_course_page(course):
             if (user) is not None:
                 user = user.one()
                 if check_course_in_cart(user.id, get_course_by_link(course).id):
-                    flask.flash('Курс уже в корзине', 'warning')
+                    flask.flash('Курс уже куплен или находится в корзине', 'warning')
                 else:
 
                     item = Cart(account_id=user.id,
-                                course_id=get_course_by_link(course).id)
+                                course_id=get_course_by_link(course).id,
+                                status=True)
 
                     database.session.add(item)
                     database.session.commit()
-
-                    """ 
-                    active_course = ActiveCourses(account_id=user.id,
-                                                  course_id=get_course_by_link(course).id,
-                                                  percentage_of_passing=0,
-                                                  mark=0)
-
-                    database.session.add(active_course)
-                    database.session.commit()
-                    """
 
                     flask.flash('Курс добавлен в корзину', 'success')
                 return flask.render_template("course_page.html", course=get_course_by_link(course))

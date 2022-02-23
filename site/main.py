@@ -252,9 +252,43 @@ def courses():
     return flask.render_template("courses.html", courses=get_courses(min_price, max_price))
 
 
-@application.route("/course/<course>")
+def check_active_course(user_id, course_id):
+    all_active_course = ActiveCourses.query.all()
+    for ac in all_active_course:
+        if ac.account_id == user_id and ac.course_id == course_id:
+            return True
+    return False
+
+
+@application.route("/course/<course>", methods=['GET', 'POST'])
 def show_course_page(course):
+    if flask.request.method == 'POST':
+        if flask.session.get('login') is not None:
+            user = Accounts.query.filter_by(login=flask.session.get('login'))
+            if (user) is not None:
+                user = user.one()
+                if check_active_course(user.id, get_course_by_link(course).id):
+                    flask.flash('Курс уже в изучаемых', 'warning')
+                else:
+                    active_course = ActiveCourses(account_id=user.id,
+                                                  course_id=get_course_by_link(course).id,
+                                                  percentage_of_passing=0,
+                                                  mark=0)
+
+                    database.session.add(active_course)
+                    database.session.commit()
+
+                    flask.flash('Курс добавлен в изучаемые', 'success')
+                return flask.render_template("course_page.html", course=get_course_by_link(course))
+
+        flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
+
     return flask.render_template("course_page.html", course=get_course_by_link(course))
+
+
+@application.route("/course/<course>/buy")
+def show_buy_course_page(course):
+    pass
 
 
 if __name__ == "__main__":

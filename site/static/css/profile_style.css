@@ -9,19 +9,31 @@
     padding: 20px 15px;
 }
 
+.cart {
+    background-color: #FFB573;
+}
+
 .active_courses {
     background-color: #6D89D5;
 }
 
-.active-course-in-profile{
+.course-in-profile{
     border-radius: 5px;
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 20px 20px;
+
+}
+
+.course-in-cart {
+    background-color: #89DEE6;
+}
+
+.course-in-active {
     background-color: #FFD273;
 }
 
-.active-course-in-profile>h4>a{
+.course-in-profile>h4>a{
     color: black;
     text-decoration: none;
 }
@@ -40,7 +52,7 @@
     height: 40px;
 }
 
-.change-password-title {
+.profile-item-title {
     margin-bottom: 20px;
 }
 

@@ -1,13 +1,17 @@
+import datetime
 import os
 import flask
+import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from typing import Optional
+import hashlib
 
 DATABASE_FILE_NAME = "database.db"
 
 application = flask.Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DATABASE_FILE_NAME}'
+application.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE_FILE_NAME}"
 database = SQLAlchemy(application)
+application.secret_key = "secret"
 
 
 class Accounts(database.Model):
@@ -20,6 +24,12 @@ class Accounts(database.Model):
     total_rating = database.Column(database.Integer, nullable=False)
     registration_date = database.Column(database.DateTime, nullable=False)
     birthday = database.Column(database.Date)
+
+    def validate(self, password):
+        return self.password == hashlib.md5(password.encode("utf8")).hexdigest()
+
+    def set_password(self, password):
+        self.password = hashlib.md5(password.encode('utf8')).hexdigest()
 
 
 class Courses(database.Model):
@@ -36,12 +46,24 @@ class Courses(database.Model):
 
 class ActiveCourses(database.Model):
     id = database.Column(database.Integer, primary_key=True)
-    account_id = database.Column(database.Integer, database.ForeignKey('accounts.id'), nullable=False)
-    account = database.relationship('Accounts', backref=database.backref('activecourses', lazy=False))
-    course_id = database.Column(database.Integer, database.ForeignKey('courses.id'), nullable=False)
-    course = database.relationship('Courses', backref=database.backref('activecourses', lazy=False))
+    account_id = database.Column(database.Integer, database.ForeignKey("accounts.id"), nullable=False)
+    account = database.relationship("Accounts", backref=database.backref("activecourses", lazy=False))
+    course_id = database.Column(database.Integer, database.ForeignKey("courses.id"), nullable=False)
+    course = database.relationship("Courses", backref=database.backref("activecourses", lazy=False))
     percentage_of_passing = database.Column(database.Integer, nullable=False)
     mark = database.Column(database.Float, nullable=False)
+
+
+class Cart(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    account_id = database.Column(database.Integer, database.ForeignKey("accounts.id"), nullable=False)
+    account = database.relationship("Accounts", backref=database.backref("cart", lazy=False))
+    course_id = database.Column(database.Integer, database.ForeignKey("courses.id"), nullable=False)
+    course = database.relationship("Courses", backref=database.backref("cart", lazy=False))
+    status = database.Column(database.Boolean, nullable=False)
+
+    def set_not_active(self):
+        self.status = False
 
 
 class Reviews(database.Model):
@@ -56,7 +78,7 @@ def create_database_structure():
 
 
 def add_courses():
-    course_python_basics = Courses(link="python_basics",
+    course_python_basics = Courses(link="python_basic",
                                    logo_file_name="python_logo.jpg",
                                    name="Python. Основы",
                                    price=0,
@@ -113,6 +135,21 @@ def add_reviews():
     database.session.commit()
 
 
+def add_accounts():
+    leo = Accounts(
+        login="leo",
+        first_name="Leo",
+        last_name="Yu",
+        email="l@gmail.com",
+        password="None",
+        total_rating=100,
+        registration_date=datetime.datetime.now(),
+        birthday=datetime.datetime.now())
+    leo.set_password("leo")
+    database.session.add(leo)
+    database.session.commit()
+
+
 def get_courses(min_price: Optional[str], max_price: Optional[str]) -> list:
     all_courses = Courses.query.all()
     if min_price is not None and max_price is not None:
@@ -132,6 +169,12 @@ def get_course_by_link(link: str):
     return filtered[0] if len(filtered) == 1 else None
 
 
+def get_course_by_id(id: int):
+    all_courses: list = Courses.query.all()
+    filtered = list(filter(lambda course: course.id == id, all_courses))
+    return filtered[0] if len(filtered) == 1 else None
+
+
 def get_reviews() -> list:
     return Reviews.query.all()[::-1]
 
@@ -142,25 +185,90 @@ def does_database_file_exist() -> bool:
 
 @application.errorhandler(404)
 def page_not_found(error):
-    return flask.render_template('404.html'), 404
+    return flask.render_template("404.html"), 404
 
 
-@application.route('/')
+@application.route("/")
 def main_page():
     return flask.render_template("index.html")
 
 
-@application.route('/about_us')
+@application.route("/login", methods=["GET", "POST"])
+def login():
+    if flask.request.method == "POST":
+        login = flask.request.form.get("login")
+        password = flask.request.form.get("password")
+        try:
+            if Accounts.query.filter_by(login=login).one().validate(password):
+                flask.session["login"] = login
+                flask.flash(f"Добро пожаловать, {login}!", "success")
+                return flask.redirect(flask.url_for("main_page"), code=301)
+            flask.flash("Неправильный пароль", "warning")
+        except sqlalchemy.exc.NoResultFound:
+            flask.flash("Неправильный логин", "danger")
+
+    return flask.render_template("login.html")
+
+
+@application.route("/logout")
+def logout():
+    if flask.session.get("login"):
+        flask.session.pop("login")
+    return flask.redirect("/", code=302)
+
+
+@application.route('/<login>', methods=['GET', 'POST'])
+def profile(login):
+    if flask.session.get('login') == login:
+        if (Accounts.query.filter_by(login=login)) is not None:
+            user = Accounts.query.filter_by(login=login)
+            user = user.one()
+            if flask.request.method == 'POST':
+                old = flask.request.form.get('old_password')
+                new = flask.request.form.get('new_password')
+
+                if old == new == None:
+                    flask.flash('Курсы куплены!', 'success')
+
+                    cart_courses = get_active_cart_for_user(user.id)
+                    for cc in cart_courses:
+                        cc.set_not_active()
+                        ac = ActiveCourses(account_id=user.id,
+                                           course_id=cc.course_id,
+                                           percentage_of_passing=0,
+                                           mark=0)
+                        database.session.add(ac)
+                        database.session.add(cc)
+                        database.session.commit()
+                else:
+                    if old == new:
+                        flask.flash('Новый пароль тот же, что и старый', 'warning')
+                    elif user.validate(old):
+                        user.set_password(new)
+                        flask.flash('Пароль изменен', 'success')
+                        database.session.add(user)
+                        database.session.commit()
+
+            return flask.render_template('profile.html',
+                                         user=user,
+                                         cart=get_cart_for_user(user.id),
+                                         active_courses=get_active_courses_for_user(user.id))
+
+    flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
+    return flask.redirect(flask.url_for('login'), code=301)
+
+
+@application.route("/about_us")
 def about_us():
     return flask.render_template("about_us.html")
 
 
-@application.route('/reviews', methods=['GET', 'POST'])
+@application.route("/reviews", methods=["GET", "POST"])
 def reviews():
-    if flask.request.method == 'POST':
-        name = flask.request.form.get('name')
-        email = flask.request.form.get('email')
-        text = flask.request.form.get('text')
+    if flask.request.method == "POST":
+        name = flask.request.form.get("name")
+        email = flask.request.form.get("email")
+        text = flask.request.form.get("text")
         if name != "" and email != "" and text != "":
             review = Reviews(name=name,
                              email=email,
@@ -170,26 +278,83 @@ def reviews():
     return flask.render_template("reviews.html", reviews=get_reviews())
 
 
-@application.route('/404')
+@application.route("/404")
 def null_page():
     return flask.render_template("404.html")
 
 
-@application.route('/courses')
+@application.route("/courses")
 def courses():
-    min_price = flask.request.args.get('min_price', None)
-    max_price = flask.request.args.get('max_price', None)
+    min_price = flask.request.args.get("min_price", None)
+    max_price = flask.request.args.get("max_price", None)
     return flask.render_template("courses.html", courses=get_courses(min_price, max_price))
 
 
-@application.route('/course/<course>')
+def check_course_in_cart(user_id, course_id):
+    all_active_course = Cart.query.all()
+    for ac in all_active_course:
+        if ac.account_id == user_id and ac.course_id == course_id:
+            return True
+    return False
+
+
+def get_active_courses_for_user(user_id):
+    result = []
+    all_active_course = ActiveCourses.query.all()
+    for ac in all_active_course:
+        if ac.account_id == user_id:
+            result.append(get_course_by_id(ac.course_id))
+    return result
+
+
+def get_active_cart_for_user(user_id):
+    result = []
+    all_cart = Cart.query.all()
+    for c in all_cart:
+        if c.account_id == user_id and c.status:
+            result.append(c)
+    return result
+
+
+def get_cart_for_user(user_id):
+    result = []
+    all_cart = Cart.query.all()
+    for c in all_cart:
+        if c.account_id == user_id and c.status:
+            result.append(get_course_by_id(c.course_id))
+    return result
+
+
+@application.route("/course/<course>", methods=['GET', 'POST'])
 def show_course_page(course):
-    return flask.render_template('course_page.html', course=get_course_by_link(course))
+    if flask.request.method == 'POST':
+        if flask.session.get('login') is not None:
+            user = Accounts.query.filter_by(login=flask.session.get('login'))
+            if (user) is not None:
+                user = user.one()
+                if check_course_in_cart(user.id, get_course_by_link(course).id):
+                    flask.flash('Курс уже куплен или находится в корзине', 'warning')
+                else:
+
+                    item = Cart(account_id=user.id,
+                                course_id=get_course_by_link(course).id,
+                                status=True)
+
+                    database.session.add(item)
+                    database.session.commit()
+
+                    flask.flash('Курс добавлен в корзину', 'success')
+                return flask.render_template("course_page.html", course=get_course_by_link(course))
+
+        flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
+
+    return flask.render_template("course_page.html", course=get_course_by_link(course))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if not does_database_file_exist():
         create_database_structure()
         add_courses()
         add_reviews()
+        add_accounts()
     application.run(debug=True)

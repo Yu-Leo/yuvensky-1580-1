@@ -11,6 +11,9 @@
     height: 40px;
 }
 
+.login-password {
+    margin-top: 20px;
+}
 
 .login-button {
 	border-color: #FF7800;

@@ -55,6 +55,14 @@ class ActiveCourses(database.Model):
     mark = database.Column(database.Float, nullable=False)
 
 
+class Cart(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    account_id = database.Column(database.Integer, database.ForeignKey("accounts.id"), nullable=False)
+    account = database.relationship("Accounts", backref=database.backref("cart", lazy=False))
+    course_id = database.Column(database.Integer, database.ForeignKey("courses.id"), nullable=False)
+    course = database.relationship("Courses", backref=database.backref("cart", lazy=False))
+
+
 class Reviews(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     name = database.Column(database.String(80), nullable=False)
@@ -223,7 +231,10 @@ def profile(login):
                     database.session.add(user)
                     database.session.commit()
 
-            return flask.render_template('profile.html', user=user, active_courses=get_active_courses_for_user(user.id))
+            return flask.render_template('profile.html',
+                                         user=user,
+                                         cart=get_cart_for_user(user.id),
+                                         active_courses=get_active_courses_for_user(user.id))
 
     flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
     return flask.redirect(flask.url_for('login'), code=301)
@@ -261,8 +272,8 @@ def courses():
     return flask.render_template("courses.html", courses=get_courses(min_price, max_price))
 
 
-def check_active_course(user_id, course_id):
-    all_active_course = ActiveCourses.query.all()
+def check_course_in_cart(user_id, course_id):
+    all_active_course = Cart.query.all()
     for ac in all_active_course:
         if ac.account_id == user_id and ac.course_id == course_id:
             return True
@@ -278,6 +289,15 @@ def get_active_courses_for_user(user_id):
     return result
 
 
+def get_cart_for_user(user_id):
+    result = []
+    all_cart = Cart.query.all()
+    for c in all_cart:
+        if c.account_id == user_id:
+            result.append(get_course_by_id(c.course_id))
+    return result
+
+
 @application.route("/course/<course>", methods=['GET', 'POST'])
 def show_course_page(course):
     if flask.request.method == 'POST':
@@ -285,9 +305,17 @@ def show_course_page(course):
             user = Accounts.query.filter_by(login=flask.session.get('login'))
             if (user) is not None:
                 user = user.one()
-                if check_active_course(user.id, get_course_by_link(course).id):
-                    flask.flash('Курс уже в изучаемых', 'warning')
+                if check_course_in_cart(user.id, get_course_by_link(course).id):
+                    flask.flash('Курс уже в корзине', 'warning')
                 else:
+
+                    item = Cart(account_id=user.id,
+                                course_id=get_course_by_link(course).id)
+
+                    database.session.add(item)
+                    database.session.commit()
+
+                    """ 
                     active_course = ActiveCourses(account_id=user.id,
                                                   course_id=get_course_by_link(course).id,
                                                   percentage_of_passing=0,
@@ -295,8 +323,9 @@ def show_course_page(course):
 
                     database.session.add(active_course)
                     database.session.commit()
+                    """
 
-                    flask.flash('Курс добавлен в изучаемые', 'success')
+                    flask.flash('Курс добавлен в корзину', 'success')
                 return flask.render_template("course_page.html", course=get_course_by_link(course))
 
         flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')

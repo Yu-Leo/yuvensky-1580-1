@@ -13,11 +13,23 @@
     <div class="profile">
         <h2>Профиль {{user.login}}</h2>
 
+        <div class="profile-item cart">
+            <h3 class="profile-item-title "> Корзина: </h3>
+
+            {% for course in cart%}
+            <div class="course-in-profile course-in-cart">
+                <h4><a href="course/{{course.link}}">{{course.name}}</a></h4>
+                <p class="courses-item-card-description">{{course.description}}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+
         <div class="profile-item active_courses">
-            <h3 class="change-password-title"> Изучаемые курсы: </h3>
+            <h3 class="profile-item-title "> Изучаемые курсы: </h3>
 
             {% for course in active_courses%}
-            <div class="active-course-in-profile">
+            <div class="course-in-profile course-in-active">
                 <h4><a href="course/{{course.link}}">{{course.name}}</a></h4>
                 <p class="courses-item-card-description">{{course.description}}</p>
             </div>
@@ -25,7 +37,7 @@
         </div>
 
         <form method="post" class="profile-item password_form">
-            <h3 class="change-password-title"> Сменить пароль </h3>
+            <h3 class="profile-item-title "> Сменить пароль </h3>
             <input type="password" class="form-control" name="old_password"
                    placeholder="Старый пароль">
             <input type="password" class="form-control" name="new_password"

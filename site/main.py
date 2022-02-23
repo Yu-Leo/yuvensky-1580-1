@@ -67,7 +67,7 @@ def create_database_structure():
 
 
 def add_courses():
-    course_python_basics = Courses(link="python_basics",
+    course_python_basics = Courses(link="python_basic",
                                    logo_file_name="python_logo.jpg",
                                    name="Python. Основы",
                                    price=0,
@@ -157,6 +157,12 @@ def get_course_by_link(link: str):
     return filtered[0] if len(filtered) == 1 else None
 
 
+def get_course_by_id(id: int):
+    all_courses: list = Courses.query.all()
+    filtered = list(filter(lambda course: course.id == id, all_courses))
+    return filtered[0] if len(filtered) == 1 else None
+
+
 def get_reviews() -> list:
     return Reviews.query.all()[::-1]
 
@@ -205,6 +211,7 @@ def profile(login):
         if (Accounts.query.filter_by(login=login)) is not None:
             user = Accounts.query.filter_by(login=login)
             user = user.one()
+
             if flask.request.method == 'POST':
                 old = flask.request.form.get('old_password')
                 new = flask.request.form.get('new_password')
@@ -215,7 +222,9 @@ def profile(login):
                     flask.flash('Пароль изменен', 'success')
                     database.session.add(user)
                     database.session.commit()
-            return flask.render_template('profile.html', user=user)
+
+            return flask.render_template('profile.html', user=user, active_courses=get_active_courses_for_user(user.id))
+
     flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
     return flask.redirect(flask.url_for('login'), code=301)
 
@@ -260,6 +269,15 @@ def check_active_course(user_id, course_id):
     return False
 
 
+def get_active_courses_for_user(user_id):
+    result = []
+    all_active_course = ActiveCourses.query.all()
+    for ac in all_active_course:
+        if ac.account_id == user_id:
+            result.append(get_course_by_id(ac.course_id))
+    return result
+
+
 @application.route("/course/<course>", methods=['GET', 'POST'])
 def show_course_page(course):
     if flask.request.method == 'POST':
@@ -284,11 +302,6 @@ def show_course_page(course):
         flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
 
     return flask.render_template("course_page.html", course=get_course_by_link(course))
-
-
-@application.route("/course/<course>/buy")
-def show_buy_course_page(course):
-    pass
 
 
 if __name__ == "__main__":

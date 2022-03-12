@@ -9,9 +9,11 @@ import hashlib
 DATABASE_FILE_NAME = "database.db"
 
 application = flask.Flask(__name__)
-application.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE_FILE_NAME}"
+
+application.config.from_object("config")
+#application.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE_FILE_NAME}"
 database = SQLAlchemy(application)
-application.secret_key = "secret"
+#application.secret_key = "secret"
 
 
 class Accounts(database.Model):
@@ -357,4 +359,4 @@ if __name__ == "__main__":
         add_courses()
         add_reviews()
         add_accounts()
-    application.run(debug=True)
+    #application.run(debug=True)

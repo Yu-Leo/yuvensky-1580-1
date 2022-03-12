@@ -1,6 +1,4 @@
 .idea/
 __pycache__/
 
-site/database.db
-
 venv/

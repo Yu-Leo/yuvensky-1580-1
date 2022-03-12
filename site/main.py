@@ -6,14 +6,12 @@ from flask_sqlalchemy import SQLAlchemy
 from typing import Optional
 import hashlib
 
-DATABASE_FILE_NAME = "database.db"
-
 application = flask.Flask(__name__)
-
 application.config.from_object("config")
-#application.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE_FILE_NAME}"
 database = SQLAlchemy(application)
-#application.secret_key = "secret"
+
+# application.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE_FILE_NAME}"
+# application.secret_key = "secret"
 
 
 class Accounts(database.Model):
@@ -179,10 +177,6 @@ def get_course_by_id(id: int):
 
 def get_reviews() -> list:
     return Reviews.query.all()[::-1]
-
-
-def does_database_file_exist() -> bool:
-    return os.path.isfile(DATABASE_FILE_NAME)
 
 
 @application.errorhandler(404)
@@ -351,12 +345,3 @@ def show_course_page(course):
         flask.flash('Пожалуйста, войдите в свой аккаунт, чтобы продолжить', 'warning')
 
     return flask.render_template("course_page.html", course=get_course_by_link(course))
-
-
-if __name__ == "__main__":
-    if not does_database_file_exist():
-        create_database_structure()
-        add_courses()
-        add_reviews()
-        add_accounts()
-    #application.run(debug=True)
